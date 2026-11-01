@@ -44,6 +44,15 @@ Copy `.env.example` to `.env` for local setup. Never expose the API key through 
 or commit it to source control. The newsletter endpoint reports an unavailable state until both
 Mailchimp values are configured.
 
+## Deploying to Vercel
+
+Import `MarvelPrOuma-byte/JuveTechMedia1` into Vercel and use the repository root as the project
+root. The project is configured for TanStack Start with Nitro's Vercel deployment target; Vercel
+should detect the `npm run build` command and Nitro output automatically. Add
+`MAILCHIMP_API_KEY` and `MAILCHIMP_AUDIENCE_ID` as server-side environment variables in the
+Vercel project settings to enable newsletter subscriptions. Redeploy after adding or changing
+environment variables.
+
 ## Pages and content
 
 - `/case-studies` contains the King Solomon Comprehensive School website project. Only client and
