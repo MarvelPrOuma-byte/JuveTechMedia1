@@ -1,0 +1,4 @@
+- Keep shared page styling in semantic global tokens and shared site sections; the homepage uses a separate concise call-to-action instead of embedding every page. This prevents homepage overload.
+- Keep illustrative numeric package amounts and KES formatting in the shared pricing module so every price uses the same currency.
+- Mount decorative motion once in the root shell; it must ignore pointer events, support reduced motion and omit the magnifier on touch devices to preserve usability.
+- Keep per-page search metadata in the shared browser-safe pageHead helper, using self-referencing relative URLs until a public domain exists; only the first section on content routes uses an h1.
