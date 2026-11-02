@@ -7,9 +7,10 @@ export const Route = createFileRoute("/")({
   head: () =>
     pageHead(
       "/",
-      "JuveTech Media | Digital Marketing Agency, SEO & Paid Media Kenya",
-      "JuveTech Media is a digital marketing agency in Kenya offering SEO and organic growth, performance marketing and paid media services, web design, and marketing consultancy.",
+      "JuveTech Media | Digital Marketing Agency in Kenya",
+      "Looking for a digital marketing agency in Kenya? JuveTech Media helps businesses grow with SEO, paid media, web design, and digital marketing consultancy.",
       [
+        "digital marketing agency Kenya",
         "digital marketing agency",
         "SEO and organic growth agency",
         "performance marketing",

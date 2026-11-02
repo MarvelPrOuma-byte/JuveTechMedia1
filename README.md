@@ -53,6 +53,14 @@ should detect the `npm run build` command and Nitro output automatically. Add
 Vercel project settings to enable newsletter subscriptions. Redeploy after adding or changing
 environment variables.
 
+## Search visibility
+
+The public site URL is `https://www.juvetechmedia.co.ke`. Page canonicals and social preview URLs
+use this domain; `public/robots.txt` points crawlers to `public/sitemap.xml`. Update the sitemap
+when adding or removing public pages. After deployment, verify the domain in Google Search Console
+and submit `https://www.juvetechmedia.co.ke/sitemap.xml`. Search rankings depend on many factors
+and cannot be guaranteed by site metadata alone.
+
 ## Pages and content
 
 - `/case-studies` contains the King Solomon Comprehensive School website project. Only client and

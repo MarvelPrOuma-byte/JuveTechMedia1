@@ -3,7 +3,7 @@ import { ArrowLeft, ArrowUpRight, Clock3 } from "lucide-react";
 
 import { SectionHead } from "@/components/site/Sections";
 import { getBlogPost } from "@/lib/blog-posts";
-import { pageHead } from "@/lib/seo";
+import { absoluteUrl, pageHead } from "@/lib/seo";
 
 export const Route = createFileRoute("/blog/$slug")({
   loader: ({ params }) => {
@@ -33,7 +33,7 @@ export const Route = createFileRoute("/blog/$slug")({
         datePublished: post.published,
         author: { "@type": "Organization", name: "JuveTech Media" },
         publisher: { "@type": "Organization", name: "JuveTech Media" },
-        mainEntityOfPage: `/blog/${post.slug}`,
+        mainEntityOfPage: absoluteUrl(`/blog/${post.slug}`),
         keywords: [post.category, "digital marketing"],
       },
     );

@@ -13,6 +13,7 @@ import { type ReactNode } from "react";
 import appCss from "../styles.css?url";
 import { Header, Footer } from "../components/site/Layout";
 import { InteractiveEffects } from "../components/site/InteractiveEffects";
+import { absoluteUrl, SITE_URL } from "../lib/seo";
 
 function NotFoundComponent() {
   return (
@@ -105,9 +106,17 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
         children: JSON.stringify({
           "@context": "https://schema.org",
           "@type": "Organization",
+          "@id": `${SITE_URL}/#organization`,
           name: "JuveTech Media",
+          url: SITE_URL,
+          logo: absoluteUrl("/juvetechmedia.png"),
           description:
             "Web design, SEO, paid advertising, graphic design and video production for businesses in Kenya.",
+          sameAs: [
+            "https://www.instagram.com/juvetechmedia/",
+            "https://www.tiktok.com/@juvetechmedia",
+            "https://x.com/juvetechmedia",
+          ],
           knowsAbout: [
             "Digital marketing agency services",
             "SEO and organic growth",
@@ -119,6 +128,13 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
           ],
           email: "juvetechmedia@gmail.com",
           telephone: "+254757544494",
+          contactPoint: {
+            "@type": "ContactPoint",
+            telephone: "+254757544494",
+            email: "juvetechmedia@gmail.com",
+            contactType: "customer service",
+            areaServed: "KE",
+          },
           areaServed: { "@type": "Country", name: "Kenya" },
           hasOfferCatalog: {
             "@type": "OfferCatalog",
@@ -129,6 +145,18 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
               { "@type": "OfferCatalog", name: "Digital marketing consultancy" },
             ],
           },
+        }),
+      },
+      {
+        type: "application/ld+json",
+        children: JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "WebSite",
+          "@id": `${SITE_URL}/#website`,
+          name: "JuveTech Media",
+          alternateName: "JuveTech Media Kenya",
+          url: SITE_URL,
+          publisher: { "@id": `${SITE_URL}/#organization` },
         }),
       },
     ],

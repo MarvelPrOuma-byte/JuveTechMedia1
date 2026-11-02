@@ -1,3 +1,9 @@
+export const SITE_URL = "https://www.juvetechmedia.co.ke";
+
+export function absoluteUrl(path: string) {
+  return new URL(path, SITE_URL).toString();
+}
+
 export function pageHead(
   path: string,
   title: string,
@@ -13,15 +19,15 @@ export function pageHead(
       { property: "og:title", content: title },
       { property: "og:description", content: description },
       { property: "og:type", content: "website" },
-      { property: "og:url", content: path },
-      { property: "og:image", content: "/juvetechmedia.png" },
+      { property: "og:url", content: absoluteUrl(path) },
+      { property: "og:image", content: absoluteUrl("/juvetechmedia.png") },
       { property: "og:image:alt", content: "JuveTech Media" },
       { name: "twitter:card", content: "summary_large_image" },
       { name: "twitter:title", content: title },
       { name: "twitter:description", content: description },
-      { name: "twitter:image", content: "/juvetechmedia.png" },
+      { name: "twitter:image", content: absoluteUrl("/juvetechmedia.png") },
     ],
-    links: [{ rel: "canonical", href: path }],
+    links: [{ rel: "canonical", href: absoluteUrl(path) }],
     ...(structuredData
       ? {
           scripts: [

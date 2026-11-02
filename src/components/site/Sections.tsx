@@ -92,8 +92,8 @@ export function Hero() {
         </h1>
         <p className="mt-5 text-2xl font-medium md:text-3xl">Big ideas. Real growth.</p>
         <p className="mx-auto mt-5 max-w-lg text-base leading-7 text-muted-foreground">
-          Websites, marketing and creative that move your business forward. One team. Less noise.
-          More impact.
+          JuveTech Media is a digital marketing agency in Kenya. We help businesses grow with SEO,
+          paid media, web design, and creative. One team. Less noise. More impact.
         </p>
         <div className="mt-8 flex flex-wrap justify-center gap-3">
           <Button asChild size="lg">
