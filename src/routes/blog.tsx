@@ -6,13 +6,15 @@ import { blogPosts } from "@/lib/blog-posts";
 import { pageHead } from "@/lib/seo";
 
 export const Route = createFileRoute("/blog")({
-  head: () =>
-    pageHead(
+  head: ({ matches }) => {
+    if (matches.some(({ routeId }) => routeId === "/blog/$slug")) return {};
+    return pageHead(
       "/blog",
       "Digital Marketing Insights | JuveTech Media",
       "Practical guides to website planning, SEO, and paid advertising for growing businesses.",
       ["digital marketing blog", "SEO strategy", "paid advertising", "website design Kenya"],
-    ),
+    );
+  },
   component: BlogIndexPage,
 });
 
