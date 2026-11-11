@@ -92,14 +92,14 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
         rel: "stylesheet",
         href: appCss,
       },
-      { rel: "icon", href: "/juvetechmedia.png", type: "image/png" },
+      { rel: "icon", href: "/favicon.png", type: "image/png", sizes: "500x500" },
       { rel: "apple-touch-icon", href: "/juvetechmedia.png" },
     ],
     scripts: [
       {
         type: "text/javascript",
         children:
-          '(() => { const saved = localStorage.getItem("juvetech-theme"); const dark = saved ? saved === "dark" : window.matchMedia("(prefers-color-scheme: dark)").matches; document.documentElement.classList.toggle("dark", dark); document.documentElement.style.colorScheme = dark ? "dark" : "light"; document.querySelectorAll(\'link[rel="icon"], link[rel="apple-touch-icon"]\').forEach((link) => { link.href = dark ? "/juvetechmedia-dark.png" : "/juvetechmedia.png"; }); })();',
+          '(() => { const saved = localStorage.getItem("juvetech-theme"); const dark = saved ? saved === "dark" : window.matchMedia("(prefers-color-scheme: dark)").matches; document.documentElement.classList.toggle("dark", dark); document.documentElement.style.colorScheme = dark ? "dark" : "light"; document.querySelectorAll(\'link[rel="apple-touch-icon"]\').forEach((link) => { link.href = dark ? "/juvetechmedia-dark.png" : "/juvetechmedia.png"; }); })();',
       },
       {
         type: "application/ld+json",
@@ -113,9 +113,9 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
           description:
             "Web design, SEO, paid advertising, graphic design and video production for businesses in Kenya.",
           sameAs: [
-            "https://www.instagram.com/juvetechmedia/",
-            "https://www.tiktok.com/@juvetechmedia",
-            "https://x.com/juvetechmedia",
+            "https://instagram.com/juvetech.media",
+            "https://www.facebook.com/profile.php?id=61596134745175",
+            "https://wa.me/254757544494",
           ],
           knowsAbout: [
             "Digital marketing agency services",

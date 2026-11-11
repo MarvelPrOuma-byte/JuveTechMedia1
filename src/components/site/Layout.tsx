@@ -9,12 +9,10 @@ import {
   Users,
   Wallet,
   MessageCircle,
+  Facebook,
   Moon,
   Sun,
   Instagram,
-  Linkedin,
-  Music2,
-  Twitter,
   Mail,
   Newspaper,
   Briefcase,
@@ -36,27 +34,21 @@ const nav = [
 const socials = [
   {
     label: "Instagram",
-    detail: "@juvetechmedia",
-    href: "https://www.instagram.com/juvetechmedia/",
+    detail: "@juvetech.media",
+    href: "https://instagram.com/juvetech.media",
     icon: Instagram,
   },
   {
-    label: "TikTok",
-    detail: "@juvetechmedia",
-    href: "https://www.tiktok.com/@juvetechmedia",
-    icon: Music2,
-  },
-  {
-    label: "LinkedIn",
+    label: "Facebook",
     detail: "JuveTech Media",
-    href: "https://www.linkedin.com/search/results/companies/?keywords=JuveTech%20Media",
-    icon: Linkedin,
+    href: "https://www.facebook.com/profile.php?id=61596134745175",
+    icon: Facebook,
   },
   {
-    label: "X",
-    detail: "@juvetechmedia",
-    href: "https://x.com/juvetechmedia",
-    icon: Twitter,
+    label: "WhatsApp",
+    detail: "+254 757 544 494",
+    href: "https://wa.me/254757544494",
+    icon: MessageCircle,
   },
 ] as const;
 
@@ -72,11 +64,9 @@ function ThemeToggle() {
     document.documentElement.classList.toggle("dark", nextIsDark);
     document.documentElement.style.colorScheme = nextIsDark ? "dark" : "light";
     localStorage.setItem("juvetech-theme", nextIsDark ? "dark" : "light");
-    document
-      .querySelectorAll<HTMLLinkElement>('link[rel="icon"], link[rel="apple-touch-icon"]')
-      .forEach((link) => {
-        link.href = nextIsDark ? "/juvetechmedia-dark.png" : "/juvetechmedia.png";
-      });
+    document.querySelectorAll<HTMLLinkElement>('link[rel="apple-touch-icon"]').forEach((link) => {
+      link.href = nextIsDark ? "/juvetechmedia-dark.png" : "/juvetechmedia.png";
+    });
     setIsDark(nextIsDark);
   };
 
