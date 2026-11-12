@@ -142,7 +142,7 @@ function TeamPage() {
                     </a>
                     <a
                       className="team-contact-link"
-                      href={`mailto:${member.email ?? "juvetechmedia@gmail.com"}`}
+                      href={`mailto:${member.email ?? "info@juvetechmedia.co.ke"}`}
                       aria-label={`Email ${member.name}`}
                       title="Email"
                     >

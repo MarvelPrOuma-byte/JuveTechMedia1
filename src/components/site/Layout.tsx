@@ -247,11 +247,11 @@ export function Footer() {
             Websites, SEO, paid ads and scroll-stopping creative for brands ready to grow.
           </p>
           <a
-            href="mailto:juvetechmedia@gmail.com"
+            href="mailto:info@juvetechmedia.co.ke"
             className="mt-4 inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-primary"
           >
             <Mail size={16} aria-hidden="true" />
-            juvetechmedia@gmail.com
+            info@juvetechmedia.co.ke
           </a>
           <form onSubmit={submit} className="mt-6 flex max-w-sm gap-2">
             <label className="sr-only" htmlFor="newsletter-email">

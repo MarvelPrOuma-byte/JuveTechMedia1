@@ -283,18 +283,22 @@ export function Booking({ primary = false }: { primary?: boolean }) {
   const [day, setDay] = useState(0);
   const [slot, setSlot] = useState<string | null>(null);
   const [requestUrl, setRequestUrl] = useState("");
+  const [newsletterMessage, setNewsletterMessage] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const days = getAvailableBookingDays();
 
-  const submit = (e: FormEvent<HTMLFormElement>) => {
+  const submit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    const f = new FormData(e.currentTarget);
+    const form = e.currentTarget;
+    const f = new FormData(form);
     const name = String(f.get("name") || "").trim();
     const email = String(f.get("email") || "").trim();
     const website = String(f.get("website") || "").trim();
     const service = String(f.get("service") || "").trim();
     const msg = String(f.get("message") || "").trim();
+    const newsletterConsent = f.get("newsletterConsent") === "on";
     if (!name || name.length > 100) return setError("Please enter your name (max 100 characters).");
-    if (!/^\S+@\S+\.\S+$/.test(email) || email.length > 255)
+    if (!/^\S+@\S+\.\S+$/.test(email) || email.length > 254)
       return setError("Please enter a valid email.");
     if (website.length > 255) return setError("Website URL must be under 255 characters.");
     if (!service) return setError("Please choose a service.");
@@ -305,22 +309,71 @@ export function Booking({ primary = false }: { primary?: boolean }) {
     if (!selectedDay) return setError("Please select an available day.");
 
     setError("");
-    setRequestUrl(
-      buildInquiryWhatsAppUrl({
-        name,
-        email,
-        ...(website ? { website } : {}),
-        service,
-        message: msg,
-        callDate: selectedDay.toLocaleDateString("en-KE", {
-          weekday: "long",
-          year: "numeric",
-          month: "long",
-          day: "numeric",
+    setIsSubmitting(true);
+    try {
+      const callDate = selectedDay.toLocaleDateString("en-KE", {
+        weekday: "long",
+        year: "numeric",
+        month: "long",
+        day: "numeric",
+      });
+      const response = await fetch("/api/inquiry", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          name,
+          email,
+          website,
+          service,
+          message: msg,
+          callDate,
+          callTime: slot,
+          newsletterConsent,
         }),
-        callTime: slot,
-      }),
-    );
+      });
+      const result: unknown = await response.json();
+      if (
+        typeof result !== "object" ||
+        result === null ||
+        !("success" in result) ||
+        result.success !== true ||
+        !("message" in result) ||
+        typeof result.message !== "string" ||
+        !("newsletterMessage" in result) ||
+        (typeof result.newsletterMessage !== "string" && result.newsletterMessage !== null)
+      ) {
+        const message =
+          typeof result === "object" &&
+          result !== null &&
+          "message" in result &&
+          typeof result.message === "string"
+            ? result.message
+            : "We couldn't save your inquiry. Please try again later.";
+        throw new Error(message);
+      }
+
+      setNewsletterMessage(result.newsletterMessage ?? "");
+      setRequestUrl(
+        buildInquiryWhatsAppUrl({
+          name,
+          email,
+          ...(website ? { website } : {}),
+          service,
+          message: msg,
+          callDate,
+          callTime: slot,
+        }),
+      );
+    } catch (submitError) {
+      console.error("Inquiry submission failed.", submitError);
+      setError(
+        submitError instanceof Error
+          ? submitError.message
+          : "We couldn't save your inquiry. Please try again later.",
+      );
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -338,9 +391,14 @@ export function Booking({ primary = false }: { primary?: boolean }) {
               <Check className="mx-auto text-primary" size={40} />
               <h3 className="mt-4 text-xl font-bold">Your request is ready</h3>
               <p className="mx-auto mt-2 max-w-md text-sm text-muted-foreground">
-                Open WhatsApp and press Send to deliver your request. Your selected time is a
-                preference, not a confirmed booking; we’ll confirm by replying.
+                Your details have been saved. Open WhatsApp and press Send to contact us. Your
+                selected time is a preference, not a confirmed booking; we’ll confirm by replying.
               </p>
+              {newsletterMessage && (
+                <p className="mx-auto mt-3 max-w-md text-sm text-muted-foreground" role="status">
+                  {newsletterMessage}
+                </p>
+              )}
               <a href={requestUrl} target="_blank" rel="noreferrer" className="btn-primary mt-6">
                 Open WhatsApp <MessageCircle size={18} aria-hidden="true" />
               </a>
@@ -374,7 +432,7 @@ export function Booking({ primary = false }: { primary?: boolean }) {
                     placeholder="you@example.com"
                     autoComplete="email"
                     required
-                    maxLength={255}
+                    maxLength={254}
                     className="field"
                   />
                 </label>
@@ -412,13 +470,21 @@ export function Booking({ primary = false }: { primary?: boolean }) {
                   required
                 />
               </label>
+              <label className="flex items-start gap-3 text-sm text-muted-foreground">
+                <input name="newsletterConsent" type="checkbox" className="mt-1 accent-primary" />
+                <span>
+                  Email me occasional JuveTech Media news and marketing tips. You can unsubscribe at
+                  any time.
+                </span>
+              </label>
               {error && (
                 <p className="text-sm text-destructive" role="alert">
                   {error}
                 </p>
               )}
-              <button className="btn-primary w-full">
-                Prepare WhatsApp request <MessageCircle size={18} aria-hidden="true" />
+              <button className="btn-primary w-full" disabled={isSubmitting}>
+                {isSubmitting ? "Saving your request…" : "Save request and continue to WhatsApp"}{" "}
+                <MessageCircle size={18} aria-hidden="true" />
               </button>
             </>
           )}
