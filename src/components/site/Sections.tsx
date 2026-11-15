@@ -167,12 +167,14 @@ export function Services({ primary = false }: { primary?: boolean }) {
                     {price.period}
                   </p>
                 )}
-                <Button asChild variant="link" className="mt-2 h-auto px-0">
-                  <Link to="/services/$serviceId" params={{ serviceId: service.id }}>
-                    Service details <ArrowUpRight aria-hidden="true" />
-                  </Link>
-                </Button>
               </details>
+              <Link
+                to="/services/$serviceId"
+                params={{ serviceId: service.id }}
+                className="btn-ghost mt-4 w-full justify-center"
+              >
+                View full service details <ArrowUpRight aria-hidden="true" />
+              </Link>
             </article>
           );
         })}

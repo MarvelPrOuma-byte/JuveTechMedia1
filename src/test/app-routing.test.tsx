@@ -3,6 +3,7 @@ import { createRouter, rootRouteId } from "@tanstack/react-router";
 import { describe, expect, it } from "vitest";
 
 import { routeTree } from "@/routeTree.gen";
+import { blogPosts } from "@/lib/blog-posts";
 
 // Match routes without running loaders or rendering: loaders may need a server or
 // network the test run lacks, and jsdom never loads the stylesheets React waits on.
@@ -23,10 +24,9 @@ describe("App routing", () => {
     expect(matches.at(-1)?.routeId).toBe(rootRouteId);
   });
 
-  it.each([
+  const serviceAndPagePaths = [
     "/team",
     "/blog",
-    "/blog/seo-paid-media-growth",
     "/portfolio",
     "/services/social-media",
     "/services/video-production",
@@ -35,11 +35,16 @@ describe("App routing", () => {
     "/services/seo",
     "/services/branding",
     "/services/local-seo",
-  ])("matches the %s page", (path) => {
-    const router = createRouter({ routeTree, context: { queryClient: new QueryClient() } });
+  ];
 
-    const matches = router.matchRoutes(path);
+  it.each([...serviceAndPagePaths, ...blogPosts.map((post) => `/blog/${post.slug}`)])(
+    "matches the %s page",
+    (path) => {
+      const router = createRouter({ routeTree, context: { queryClient: new QueryClient() } });
 
-    expect(matches.at(-1)?.routeId).not.toBe(rootRouteId);
-  });
+      const matches = router.matchRoutes(path);
+
+      expect(matches.at(-1)?.routeId).not.toBe(rootRouteId);
+    },
+  );
 });

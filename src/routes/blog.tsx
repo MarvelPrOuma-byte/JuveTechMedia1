@@ -1,4 +1,4 @@
-import { Link, createFileRoute } from "@tanstack/react-router";
+import { Link, Outlet, createFileRoute, useRouterState } from "@tanstack/react-router";
 import { ArrowUpRight, Clock3 } from "lucide-react";
 
 import { SectionHead } from "@/components/site/Sections";
@@ -15,8 +15,16 @@ export const Route = createFileRoute("/blog")({
       ["digital marketing blog", "SEO strategy", "paid advertising", "website design Kenya"],
     );
   },
-  component: BlogIndexPage,
+  component: BlogRoutePage,
 });
+
+function BlogRoutePage() {
+  const isArticlePage = useRouterState({
+    select: (state) => state.matches.some(({ routeId }) => routeId.startsWith("/blog/")),
+  });
+
+  return isArticlePage ? <Outlet /> : <BlogIndexPage />;
+}
 
 function BlogIndexPage() {
   return (
