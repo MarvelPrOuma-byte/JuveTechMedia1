@@ -3,7 +3,6 @@ import "./lib/error-capture";
 import { consumeLastCapturedError } from "./lib/error-capture";
 import { renderErrorPage } from "./lib/error-page";
 import { handleInquiryRequest } from "./lib/inquiry.server";
-import { handleNewsletterRequest } from "./lib/newsletter.server";
 
 type ServerEntry = {
   fetch: (request: Request, env: unknown, ctx: unknown) => Promise<Response> | Response;
@@ -66,29 +65,6 @@ export default {
             typeof bindings["GOOGLE_SHEETS_WEBHOOK_TOKEN"] === "string"
               ? bindings["GOOGLE_SHEETS_WEBHOOK_TOKEN"]
               : nodeEnvironment.process?.env?.["GOOGLE_SHEETS_WEBHOOK_TOKEN"],
-          MAILCHIMP_API_KEY:
-            typeof bindings["MAILCHIMP_API_KEY"] === "string"
-              ? bindings["MAILCHIMP_API_KEY"]
-              : nodeEnvironment.process?.env?.["MAILCHIMP_API_KEY"],
-          MAILCHIMP_AUDIENCE_ID:
-            typeof bindings["MAILCHIMP_AUDIENCE_ID"] === "string"
-              ? bindings["MAILCHIMP_AUDIENCE_ID"]
-              : nodeEnvironment.process?.env?.["MAILCHIMP_AUDIENCE_ID"],
-        });
-      }
-
-      if (pathname === "/api/newsletter") {
-        const bindings =
-          typeof env === "object" && env !== null ? (env as Record<string, unknown>) : {};
-        return handleNewsletterRequest(request, {
-          MAILCHIMP_API_KEY:
-            typeof bindings["MAILCHIMP_API_KEY"] === "string"
-              ? bindings["MAILCHIMP_API_KEY"]
-              : nodeEnvironment.process?.env?.["MAILCHIMP_API_KEY"],
-          MAILCHIMP_AUDIENCE_ID:
-            typeof bindings["MAILCHIMP_AUDIENCE_ID"] === "string"
-              ? bindings["MAILCHIMP_AUDIENCE_ID"]
-              : nodeEnvironment.process?.env?.["MAILCHIMP_AUDIENCE_ID"],
         });
       }
 

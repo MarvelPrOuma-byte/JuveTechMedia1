@@ -1,6 +1,6 @@
 import { pageHead } from "@/lib/seo";
 import { createFileRoute } from "@tanstack/react-router";
-import { Hero, Services } from "@/components/site/Sections";
+import { ClientSpotlight, Hero, Services } from "@/components/site/Sections";
 import { HomeCTA } from "@/components/site/HomeCTA";
 
 export const Route = createFileRoute("/")({
@@ -22,6 +22,7 @@ export const Route = createFileRoute("/")({
     <>
       <Hero />
       <Services />
+      <ClientSpotlight />
       <HomeCTA />
     </>
   ),

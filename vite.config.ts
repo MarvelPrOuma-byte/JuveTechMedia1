@@ -9,8 +9,6 @@ export default defineConfig(({ mode }) => {
   const env = loadEnv(mode, process.cwd(), "");
   processEnv["GOOGLE_SHEETS_WEBHOOK_URL"] ??= env["GOOGLE_SHEETS_WEBHOOK_URL"];
   processEnv["GOOGLE_SHEETS_WEBHOOK_TOKEN"] ??= env["GOOGLE_SHEETS_WEBHOOK_TOKEN"];
-  processEnv["MAILCHIMP_API_KEY"] ??= env["MAILCHIMP_API_KEY"];
-  processEnv["MAILCHIMP_AUDIENCE_ID"] ??= env["MAILCHIMP_AUDIENCE_ID"];
 
   return {
     resolve: { tsconfigPaths: true },

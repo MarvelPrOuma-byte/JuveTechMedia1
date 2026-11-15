@@ -1,26 +1,40 @@
 import { pageHead } from "@/lib/seo";
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Outlet, useRouterState } from "@tanstack/react-router";
 import { Services, Booking } from "@/components/site/Sections";
 
 export const Route = createFileRoute("/services")({
   head: ({ matches }) => {
-    if (matches.some(({ routeId }) => routeId === "/services/$serviceId")) return {};
+    if (matches.some(({ routeId }) => routeId.startsWith("/services/"))) return {};
     return pageHead(
       "/services",
-      "SEO & Organic Growth Agency | Performance Marketing Kenya",
-      "Explore SEO and organic growth, performance marketing and paid media services from JuveTech Media, a digital marketing agency in Kenya.",
+      "Digital Services | JuveTech Media",
+      "Explore social media, video production, web design, app development, SEO and PPC, branding, and local SEO services from JuveTech Media.",
       [
-        "SEO and organic growth agency",
-        "performance marketing",
-        "paid media services",
+        "social media management Kenya",
+        "video production",
+        "web design Kenya",
+        "app development",
+        "SEO and PPC",
+        "branding",
+        "local SEO",
         "digital marketing agency Kenya",
       ],
     );
   },
-  component: () => (
+  component: ServicesRoutePage,
+});
+
+function ServicesRoutePage() {
+  const isServiceDetail = useRouterState({
+    select: (state) => state.matches.some(({ routeId }) => routeId.startsWith("/services/")),
+  });
+
+  if (isServiceDetail) return <Outlet />;
+
+  return (
     <>
       <Services primary />
       <Booking />
     </>
-  ),
-});
+  );
+}

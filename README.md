@@ -28,12 +28,12 @@ Add the brand assets to `public/` using these exact filenames:
 
 The hero automatically uses the dashboard image as a poster while the video loads, and the text wordmark is a fallback if the logo cannot load.
 
-## Contact and newsletter
+## Contact inquiries
 
-The strategy-call form saves the inquiry to a Google Sheet before preparing a WhatsApp message
-for `+254 757 544 494`. The visitor must still send the prepared message in WhatsApp; the selected
-date and time are requests, not confirmed calendar bookings. Newsletter consent is optional and
-unchecked by default. Only visitors who opt in are sent to Mailchimp's double-opt-in flow.
+The strategy-call form emails each inquiry to `info@juvetechmedia.co.ke`, saves it to a Google
+Sheet, and prepares an optional WhatsApp message for `+254 757 544 494`. The selected date and time
+are requests, not confirmed calendar bookings. The Apps Script sends email using the Google
+account that owns the deployment.
 
 To connect the inquiry form to Google Sheets:
 
@@ -44,32 +44,26 @@ To connect the inquiry form to Google Sheets:
    step 1) and `WEBHOOK_TOKEN` (a long random secret you generate). Use the same token in the
    server environment; never put it in browser code or share it publicly.
 4. Choose **Deploy → New deployment → Web app**, set **Execute as** to yourself and access to
-   **Anyone**, then deploy and authorize it. The endpoint is public, but it rejects submissions
-   without the secret token. Copy the web app URL ending in `/exec`.
+   **Anyone**, then deploy and authorize the requested spreadsheet and email permissions. The
+   endpoint is public, but it rejects submissions without the secret token. Copy the web app URL
+   ending in `/exec`.
 5. Set `GOOGLE_SHEETS_WEBHOOK_URL` to that URL and `GOOGLE_SHEETS_WEBHOOK_TOKEN` to the same
    secret in `.env` for local work and in the deployment's server-side environment variables.
    Redeploy after changing production variables.
-6. Submit a test inquiry with newsletter consent off, then on. Confirm both rows appear in the
-   `Inquiries` sheet and that the opted-in address receives Mailchimp's confirmation email.
-
-Newsletter signups use Mailchimp's double-opt-in flow. Configure these server-only variables
-in the local environment or deployment secret store:
-
-- `MAILCHIMP_API_KEY` — the Mailchimp API key, including its data-center suffix (for example, `-usX`).
-- `MAILCHIMP_AUDIENCE_ID` — the ID of the Mailchimp audience that should receive signups.
+6. Submit a test inquiry. Confirm it appears in the `Inquiries` sheet and that
+   `info@juvetechmedia.co.ke` receives the email notification.
 
 Copy `.env.example` to `.env` for local setup. Never expose secrets through a `VITE_` variable or
-commit them to source control. Inquiry capture reports an unavailable state until both Google
-Sheets variables are configured. Newsletter signups report an unavailable state until both
-Mailchimp values are configured.
+commit them to source control. Inquiry delivery reports an unavailable state until both Google
+Sheets webhook variables are configured.
 
 ## Deploying to Vercel
 
 Import `MarvelPrOuma-byte/JuveTechMedia1` into Vercel and use the repository root as the project
 root. The project is configured for TanStack Start with Nitro's Vercel deployment target; Vercel
 should detect the `npm run build` command and Nitro output automatically. Add
-`GOOGLE_SHEETS_WEBHOOK_URL`, `GOOGLE_SHEETS_WEBHOOK_TOKEN`, `MAILCHIMP_API_KEY`, and
-`MAILCHIMP_AUDIENCE_ID` as server-side environment variables in the Vercel project settings.
+`GOOGLE_SHEETS_WEBHOOK_URL` and `GOOGLE_SHEETS_WEBHOOK_TOKEN` as server-side environment variables
+in the Vercel project settings.
 Redeploy after adding or changing environment variables.
 
 ## Search visibility
@@ -82,7 +76,9 @@ and cannot be guaranteed by site metadata alone.
 
 ## Pages and content
 
-- `/case-studies` contains the King Solomon Comprehensive School website project. Only client and
-  project details supplied for publication are included; no results or testimonial are fabricated.
-- `/services` links to individual service pages under `/services/`.
+- `/portfolio` contains the King Solomon Comprehensive School website project and links to the live
+  site. Only client and project details supplied for publication are included; no testimonial is
+  fabricated.
+- `/services` expands into seven individual service pages under `/services/`, with illustrative
+  starting prices in Kenyan shillings.
 - `/blog` lists practical guides, with individual articles under `/blog/`.

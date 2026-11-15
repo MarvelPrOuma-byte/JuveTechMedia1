@@ -15,7 +15,7 @@ export function HomeCTA() {
         </div>
         <div className="flex flex-wrap gap-3">
           <Button asChild size="lg" variant="outline">
-            <Link to="/case-studies">
+            <Link to="/portfolio">
               See our work <Briefcase />
             </Link>
           </Button>

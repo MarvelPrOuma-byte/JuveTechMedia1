@@ -1,7 +1,5 @@
 import { z } from "zod";
 
-import { handleNewsletterRequest, type NewsletterEnvironment } from "./newsletter.server";
-
 const inquirySchema = z.object({
   name: z.string().trim().min(1).max(100),
   email: z.string().trim().email().max(254),
@@ -10,10 +8,9 @@ const inquirySchema = z.object({
   message: z.string().trim().min(1).max(1000),
   callDate: z.string().trim().min(1).max(100),
   callTime: z.string().trim().min(1).max(20),
-  newsletterConsent: z.boolean(),
 });
 
-export type InquiryEnvironment = NewsletterEnvironment & {
+export type InquiryEnvironment = {
   GOOGLE_SHEETS_WEBHOOK_URL?: string | undefined;
   GOOGLE_SHEETS_WEBHOOK_TOKEN?: string | undefined;
 };
@@ -21,7 +18,6 @@ export type InquiryEnvironment = NewsletterEnvironment & {
 type InquiryResponse = {
   success: boolean;
   message: string;
-  newsletterMessage?: string | null;
 };
 
 function response(status: number, body: InquiryResponse) {
@@ -100,7 +96,7 @@ export async function handleInquiryRequest(
     console.error("Google Sheets inquiry request failed.", error);
     return response(502, {
       success: false,
-      message: "We couldn't save your inquiry. Please try again later.",
+      message: "We couldn't email your inquiry. Please try again later.",
     });
   }
 
@@ -118,41 +114,15 @@ export async function handleInquiryRequest(
   }
 
   if (!sheetAccepted) {
-    console.error("Google Sheets did not accept an inquiry.", { status: sheetResponse.status });
+    console.error("Inquiry webhook did not accept an inquiry.", { status: sheetResponse.status });
     return response(502, {
       success: false,
-      message: "We couldn't save your inquiry. Please try again later.",
+      message: "We couldn't email your inquiry. Please try again later.",
     });
-  }
-
-  let newsletterMessage: string | null = null;
-  if (parsed.data.newsletterConsent) {
-    const newsletterRequest = new Request(request.url, {
-      method: "POST",
-      headers: {
-        Origin: origin,
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ email: parsed.data.email }),
-    });
-    const newsletterResponse = await handleNewsletterRequest(
-      newsletterRequest,
-      environment,
-      fetcher,
-    );
-    const newsletterBody: unknown = await newsletterResponse.json();
-    newsletterMessage =
-      typeof newsletterBody === "object" &&
-      newsletterBody !== null &&
-      "message" in newsletterBody &&
-      typeof newsletterBody.message === "string"
-        ? newsletterBody.message
-        : "Your inquiry was saved, but newsletter signup could not be completed.";
   }
 
   return response(200, {
     success: true,
-    message: "Your inquiry has been saved. Open WhatsApp and press Send to contact us.",
-    newsletterMessage,
+    message: "Your inquiry has been emailed to info@juvetechmedia.co.ke.",
   });
 }

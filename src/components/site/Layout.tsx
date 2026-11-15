@@ -1,13 +1,11 @@
 import { Link } from "@tanstack/react-router";
-import { useEffect, useState, type FormEvent } from "react";
+import { useEffect, useState } from "react";
 import {
   Menu,
   X,
   ArrowUpRight,
-  Send,
   Monitor,
   Users,
-  Wallet,
   MessageCircle,
   Facebook,
   Moon,
@@ -25,9 +23,8 @@ const nav = [
   { to: "/services", label: "Services", icon: Monitor },
   { to: "/about", label: "About", icon: Users },
   { to: "/team", label: "Team", icon: Users },
-  { to: "/case-studies", label: "Work", icon: Briefcase },
+  { to: "/portfolio", label: "Portfolio", icon: Briefcase },
   { to: "/blog", label: "Blog", icon: Newspaper },
-  { to: "/pricing", label: "Pricing", icon: Wallet },
   { to: "/contact", label: "Contact", icon: MessageCircle },
 ] as const;
 
@@ -198,46 +195,6 @@ export function Header() {
 }
 
 export function Footer() {
-  const [newsletterStatus, setNewsletterStatus] = useState<
-    "idle" | "loading" | "success" | "error"
-  >("idle");
-  const [newsletterMessage, setNewsletterMessage] = useState("");
-
-  const submit = async (e: FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    const form = e.currentTarget;
-    const email = String(new FormData(form).get("email") || "").trim();
-    setNewsletterStatus("loading");
-    setNewsletterMessage("Adding you to the newsletter…");
-
-    try {
-      const response = await fetch("/api/newsletter", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email }),
-      });
-      const result: unknown = await response.json();
-
-      if (
-        typeof result !== "object" ||
-        result === null ||
-        !("success" in result) ||
-        typeof result.success !== "boolean" ||
-        !("message" in result) ||
-        typeof result.message !== "string"
-      ) {
-        throw new Error("The newsletter service returned an invalid response.");
-      }
-
-      setNewsletterMessage(result.message);
-      setNewsletterStatus(response.ok && result.success ? "success" : "error");
-      if (response.ok && result.success) form.reset();
-    } catch (error) {
-      console.error("Newsletter signup failed.", error);
-      setNewsletterStatus("error");
-      setNewsletterMessage("We couldn't complete your signup. Please try again later.");
-    }
-  };
   return (
     <footer className="relative z-10 border-t bg-background/85">
       <div className="mx-auto grid max-w-7xl gap-10 px-5 py-14 md:grid-cols-4">
@@ -253,40 +210,9 @@ export function Footer() {
             <Mail size={16} aria-hidden="true" />
             info@juvetechmedia.co.ke
           </a>
-          <form onSubmit={submit} className="mt-6 flex max-w-sm gap-2">
-            <label className="sr-only" htmlFor="newsletter-email">
-              Your email address
-            </label>
-            <input
-              id="newsletter-email"
-              name="email"
-              type="email"
-              autoComplete="email"
-              required
-              maxLength={254}
-              placeholder="Your email"
-              className="field"
-              disabled={newsletterStatus === "loading"}
-            />
-            <Button
-              type="submit"
-              aria-label="Join newsletter"
-              size="icon"
-              className="shrink-0"
-              disabled={newsletterStatus === "loading"}
-            >
-              <Send />
-            </Button>
-          </form>
-          {newsletterMessage && (
-            <p
-              className={`mt-2 text-sm ${newsletterStatus === "error" ? "text-destructive" : "text-primary"}`}
-              role="status"
-              aria-live="polite"
-            >
-              {newsletterMessage}
-            </p>
-          )}
+          <p className="mt-6 text-sm text-muted-foreground">
+            Have a question? Email our team directly.
+          </p>
         </div>
         <div>
           <h4 className="font-semibold">Company</h4>

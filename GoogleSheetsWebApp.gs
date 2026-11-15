@@ -20,7 +20,7 @@ function doPost(event) {
   const requiredFields = ["name", "email", "service", "message", "callDate", "callTime"];
   if (
     !requiredFields.every((field) => typeof inquiry[field] === "string") ||
-    typeof inquiry.newsletterConsent !== "boolean"
+    (inquiry.website !== undefined && typeof inquiry.website !== "string")
   ) {
     return jsonResponse({ success: false });
   }
@@ -47,7 +47,6 @@ function doPost(event) {
           "Project details",
           "Preferred date",
           "Preferred time",
-          "Newsletter consent",
         ]);
       }
 
@@ -60,15 +59,33 @@ function doPost(event) {
         safeCell(inquiry.message),
         safeCell(inquiry.callDate),
         safeCell(inquiry.callTime),
-        inquiry.newsletterConsent ? "Yes" : "No",
       ]);
     } finally {
       lock.releaseLock();
     }
 
+    MailApp.sendEmail({
+      to: "info@juvetechmedia.co.ke",
+      replyTo: inquiry.email,
+      subject: "New JuveTech Media website inquiry",
+      body: [
+        "A new inquiry was submitted through the JuveTech Media website.",
+        "",
+        "Name: " + safeCell(inquiry.name),
+        "Email: " + safeCell(inquiry.email),
+        "Website: " + safeCell(typeof inquiry.website === "string" ? inquiry.website : ""),
+        "Service: " + safeCell(inquiry.service),
+        "Preferred date: " + safeCell(inquiry.callDate),
+        "Preferred time: " + safeCell(inquiry.callTime),
+        "",
+        "Project details:",
+        safeCell(inquiry.message),
+      ].join("\n"),
+    });
+
     return jsonResponse({ success: true });
   } catch (error) {
-    console.error("Could not save an inquiry to the spreadsheet.", error);
+    console.error("Could not save or email an inquiry.", error);
     return jsonResponse({ success: false });
   }
 }

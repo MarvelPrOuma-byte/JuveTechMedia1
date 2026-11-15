@@ -10,7 +10,6 @@ const inquiry = {
   message: "I need help with SEO and content.",
   callDate: "Monday, November 2, 2026",
   callTime: "09:00",
-  newsletterConsent: false,
 };
 
 const request = (body: unknown, origin = "https://juvetech.example") =>
@@ -29,14 +28,14 @@ const environment = {
 };
 
 describe("Google Sheets inquiry capture", () => {
-  it("saves the inquiry and does not subscribe without explicit consent", async () => {
+  it("saves the inquiry through the configured email webhook", async () => {
     const fetcher = vi.fn<typeof fetch>().mockResolvedValue(Response.json({ success: true }));
     const response = await handleInquiryRequest(request(inquiry), environment, fetcher);
 
     expect(response.status).toBe(200);
     expect(await response.json()).toMatchObject({
       success: true,
-      newsletterMessage: null,
+      message: "Your inquiry has been emailed to info@juvetechmedia.co.ke.",
     });
     expect(fetcher).toHaveBeenCalledTimes(1);
     expect(fetcher).toHaveBeenCalledWith(
@@ -44,36 +43,6 @@ describe("Google Sheets inquiry capture", () => {
       expect.objectContaining({
         method: "POST",
         body: JSON.stringify({ ...inquiry, token: environment.GOOGLE_SHEETS_WEBHOOK_TOKEN }),
-      }),
-    );
-  });
-
-  it("subscribes to Mailchimp only after the sheet accepts a consented inquiry", async () => {
-    const fetcher = vi
-      .fn<typeof fetch>()
-      .mockResolvedValueOnce(Response.json({ success: true }))
-      .mockResolvedValueOnce(new Response(null, { status: 200 }));
-    const response = await handleInquiryRequest(
-      request({ ...inquiry, newsletterConsent: true }),
-      {
-        ...environment,
-        MAILCHIMP_API_KEY: "private-key-us19",
-        MAILCHIMP_AUDIENCE_ID: "audience-123",
-      },
-      fetcher,
-    );
-
-    expect(response.status).toBe(200);
-    expect(await response.json()).toMatchObject({
-      success: true,
-      newsletterMessage:
-        "Thanks for signing up. Please check your inbox to confirm your subscription.",
-    });
-    expect(fetcher).toHaveBeenCalledTimes(2);
-    expect(fetcher).toHaveBeenLastCalledWith(
-      "https://us19.api.mailchimp.com/3.0/lists/audience-123/members",
-      expect.objectContaining({
-        body: JSON.stringify({ email_address: inquiry.email, status: "pending" }),
       }),
     );
   });

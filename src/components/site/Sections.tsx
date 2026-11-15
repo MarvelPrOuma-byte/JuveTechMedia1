@@ -3,9 +3,11 @@ import { useEffect, useRef, useState, type FormEvent } from "react";
 import {
   Monitor,
   Search,
-  Target,
   Clapperboard,
   Palette,
+  Smartphone,
+  Share2,
+  MapPin,
   Check,
   ArrowRight,
   CalendarDays,
@@ -14,7 +16,8 @@ import {
   MessageCircle,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { formatPackagePrice, packagePrices } from "@/lib/pricing";
+import { formatPackagePrice, individualServices } from "@/lib/pricing";
+import { serviceDetails } from "@/lib/services";
 import { getAvailableBookingDays } from "@/lib/booking";
 import { buildInquiryWhatsAppUrl } from "@/lib/contact";
 import { WhatsAppLink } from "@/components/site/WhatsAppLink";
@@ -121,156 +124,80 @@ export function Hero() {
   );
 }
 
-const services = [
-  {
-    id: "web-design",
-    icon: Monitor,
-    title: "Custom Web Design & Development",
-    desc: "Lightning-fast, mobile-friendly sites built to convert.",
-  },
-  {
-    id: "seo",
-    icon: Search,
-    title: "Search Engine Optimization",
-    desc: "Rank higher and drive organic traffic that compounds.",
-  },
-  {
-    id: "paid-media",
-    icon: Target,
-    title: "Paid Ads Management",
-    desc: "High-ROI Google & Meta ad campaigns, optimized weekly.",
-  },
-  {
-    id: "video-production",
-    icon: Clapperboard,
-    title: "Advert & Video Production",
-    desc: "Engaging short-form video ads for TikTok and Reels.",
-  },
-  {
-    id: "graphic-design",
-    icon: Palette,
-    title: "Graphic Posters & Social Content",
-    desc: "Eye-catching brand visuals that stop the scroll.",
-  },
-];
+const serviceIcons = {
+  "social-media": Share2,
+  "video-production": Clapperboard,
+  "web-design": Monitor,
+  "app-development": Smartphone,
+  seo: Search,
+  branding: Palette,
+  "local-seo": MapPin,
+} as const;
 
 export function Services({ primary = false }: { primary?: boolean }) {
   return (
     <section className="mx-auto max-w-7xl px-5 py-20">
       <SectionHead
         eyebrow="What we do"
-        title="SEO, Paid Media & Digital Marketing Services"
+        title="Digital services for your next stage of growth"
+        sub="Explore each service, review its starting price, and open the detail page for more."
         primary={primary}
       />
-      <div className="mt-12 grid gap-5 sm:grid-cols-2 lg:grid-cols-5">
-        {services.map((s) => (
-          <article
-            key={s.title}
-            className="service-card group border-t border-border pt-6 transition duration-300 hover:border-primary"
-          >
-            <div className="grid h-12 w-12 place-items-center rounded-lg bg-secondary text-primary">
-              <s.icon size={22} />
-            </div>
-            <h3 className="mt-5 text-lg font-bold">{s.title}</h3>
-            <p className="mt-2 text-sm text-muted-foreground">{s.desc}</p>
-            <Button asChild variant="link" className="mt-4 h-auto px-0">
-              <Link to="/services/$serviceId" params={{ serviceId: s.id }}>
-                View service <ArrowUpRight />
-              </Link>
-            </Button>
-          </article>
-        ))}
+      <div className="mt-12 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+        {serviceDetails.map((service) => {
+          const Icon = serviceIcons[service.id];
+          const price = individualServices.find((item) => item.id === service.pricingId);
+          return (
+            <article
+              key={service.id}
+              className="service-card group rounded-2xl border bg-card p-6 transition duration-300 hover:border-primary"
+            >
+              <div className="grid h-12 w-12 place-items-center rounded-lg bg-secondary text-primary">
+                <Icon size={22} aria-hidden="true" />
+              </div>
+              <h3 className="mt-5 text-lg font-bold">{service.title}</h3>
+              <details className="mt-3 border-t pt-3">
+                <summary className="cursor-pointer text-sm font-semibold text-primary">
+                  Explore service
+                </summary>
+                <p className="mt-3 text-sm leading-6 text-muted-foreground">{service.summary}</p>
+                {price && (
+                  <p className="mt-3 text-sm">
+                    From <span className="font-semibold">{formatPackagePrice(price.amount)}</span>{" "}
+                    {price.period}
+                  </p>
+                )}
+                <Button asChild variant="link" className="mt-2 h-auto px-0">
+                  <Link to="/services/$serviceId" params={{ serviceId: service.id }}>
+                    Service details <ArrowUpRight aria-hidden="true" />
+                  </Link>
+                </Button>
+              </details>
+            </article>
+          );
+        })}
       </div>
     </section>
   );
 }
 
-const plans = [
-  {
-    name: "Startup Launchpad",
-    price: formatPackagePrice(packagePrices.launchpad),
-    period: "one-time",
-    desc: "Get online fast with a site built to convert.",
-    features: [
-      "5-page custom website",
-      "Mobile-first & lightning fast",
-      "On-page SEO setup",
-      "Google Business profile",
-      "5 social graphic posters",
-      "30 days support",
-    ],
-  },
-  {
-    name: "Full-Service Growth Retainer",
-    price: formatPackagePrice(packagePrices.growth),
-    period: "/month",
-    featured: true,
-    desc: "Your full marketing team, on autopilot.",
-    features: [
-      "Everything in Launchpad",
-      "Monthly SEO & content",
-      "Google & Meta ads management",
-      "4 short-form video adverts / mo",
-      "20 graphic posters / mo",
-      "Monthly strategy call & report",
-    ],
-  },
-  {
-    name: "Enterprise Custom",
-    price: "Let's talk",
-    period: "",
-    desc: "Multi-brand, multi-market campaigns.",
-    features: [
-      "Dedicated account team",
-      "Custom web apps & funnels",
-      "Unlimited creative requests",
-      "Advanced analytics dashboards",
-    ],
-  },
-];
-
-export function Pricing() {
+export function ClientSpotlight() {
   return (
-    <section className="mx-auto max-w-7xl px-5 py-20">
-      <SectionHead
-        eyebrow="Pricing"
-        title="Transparent packages, real results"
-        sub="Illustrative packages in Kenyan shillings. Request a quote for your project."
-        primary
-      />
-      <div className="mt-12 grid gap-6 lg:grid-cols-3">
-        {plans.map((p) => (
-          <div
-            key={p.name}
-            className={`relative rounded-2xl border p-8 ${p.featured ? "border-primary/60 bg-card shadow-glow" : "bg-card/50"}`}
-          >
-            {p.featured && (
-              <span className="absolute -top-3 left-8 rounded-full bg-gradient-accent px-3 py-1 text-xs font-semibold text-accent-foreground">
-                Most popular
-              </span>
-            )}
-            <h3 className="text-lg font-bold">{p.name}</h3>
-            <p className="mt-1 text-sm text-muted-foreground">{p.desc}</p>
-            <div className="mt-6 flex flex-wrap items-end gap-2">
-              <span className="text-3xl font-extrabold">{p.price}</span>
-              <span className="pb-1 text-sm text-muted-foreground">{p.period}</span>
-            </div>
-            <ul className="mt-6 space-y-3 text-sm">
-              {p.features.map((f) => (
-                <li key={f} className="flex gap-2">
-                  <Check size={18} className="shrink-0 text-primary" />
-                  {f}
-                </li>
-              ))}
-            </ul>
-            <Link
-              to="/contact"
-              className={`${p.featured ? "btn-primary" : "btn-ghost"} mt-8 w-full`}
-            >
-              Choose plan
-            </Link>
-          </div>
-        ))}
+    <section className="border-y bg-secondary">
+      <div className="mx-auto grid max-w-7xl gap-6 px-5 py-14 md:grid-cols-[1fr_auto] md:items-center">
+        <div>
+          <p className="text-sm font-semibold text-primary">Client spotlight</p>
+          <h2 className="mt-2 text-2xl font-bold">King Solomon Comprehensive School</h2>
+          <p className="mt-3 max-w-2xl text-sm leading-6 text-muted-foreground">
+            JuveTech Media worked with the school on a website project. Franc Oyugi, Director, is
+            listed as the client contact in the project portfolio.
+          </p>
+        </div>
+        <Button asChild variant="outline">
+          <Link to="/portfolio">
+            View the project <ArrowUpRight aria-hidden="true" />
+          </Link>
+        </Button>
       </div>
     </section>
   );
@@ -283,7 +210,6 @@ export function Booking({ primary = false }: { primary?: boolean }) {
   const [day, setDay] = useState(0);
   const [slot, setSlot] = useState<string | null>(null);
   const [requestUrl, setRequestUrl] = useState("");
-  const [newsletterMessage, setNewsletterMessage] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const days = getAvailableBookingDays();
 
@@ -296,7 +222,6 @@ export function Booking({ primary = false }: { primary?: boolean }) {
     const website = String(f.get("website") || "").trim();
     const service = String(f.get("service") || "").trim();
     const msg = String(f.get("message") || "").trim();
-    const newsletterConsent = f.get("newsletterConsent") === "on";
     if (!name || name.length > 100) return setError("Please enter your name (max 100 characters).");
     if (!/^\S+@\S+\.\S+$/.test(email) || email.length > 254)
       return setError("Please enter a valid email.");
@@ -328,7 +253,6 @@ export function Booking({ primary = false }: { primary?: boolean }) {
           message: msg,
           callDate,
           callTime: slot,
-          newsletterConsent,
         }),
       });
       const result: unknown = await response.json();
@@ -338,9 +262,7 @@ export function Booking({ primary = false }: { primary?: boolean }) {
         !("success" in result) ||
         result.success !== true ||
         !("message" in result) ||
-        typeof result.message !== "string" ||
-        !("newsletterMessage" in result) ||
-        (typeof result.newsletterMessage !== "string" && result.newsletterMessage !== null)
+        typeof result.message !== "string"
       ) {
         const message =
           typeof result === "object" &&
@@ -352,7 +274,6 @@ export function Booking({ primary = false }: { primary?: boolean }) {
         throw new Error(message);
       }
 
-      setNewsletterMessage(result.newsletterMessage ?? "");
       setRequestUrl(
         buildInquiryWhatsAppUrl({
           name,
@@ -369,7 +290,7 @@ export function Booking({ primary = false }: { primary?: boolean }) {
       setError(
         submitError instanceof Error
           ? submitError.message
-          : "We couldn't save your inquiry. Please try again later.",
+          : "We couldn't email your inquiry. Please try again later.",
       );
     } finally {
       setIsSubmitting(false);
@@ -381,7 +302,7 @@ export function Booking({ primary = false }: { primary?: boolean }) {
       <SectionHead
         eyebrow="Let's talk"
         title="Book a Digital Marketing Strategy Call"
-        sub="Request a free 30-minute marketing consultancy session. Choose a preferred time and send your details to JuveTech Media on WhatsApp."
+        sub="Request a free 30-minute strategy call. Your inquiry will be emailed to our team, and you can also open WhatsApp with your details ready."
         primary={primary}
       />
       <div className="mt-12 grid gap-6 lg:grid-cols-2">
@@ -389,16 +310,12 @@ export function Booking({ primary = false }: { primary?: boolean }) {
           {requestUrl ? (
             <div className="py-12 text-center" role="status" aria-live="polite">
               <Check className="mx-auto text-primary" size={40} />
-              <h3 className="mt-4 text-xl font-bold">Your request is ready</h3>
+              <h3 className="mt-4 text-xl font-bold">Your inquiry was sent</h3>
               <p className="mx-auto mt-2 max-w-md text-sm text-muted-foreground">
-                Your details have been saved. Open WhatsApp and press Send to contact us. Your
-                selected time is a preference, not a confirmed booking; we’ll confirm by replying.
+                Your inquiry has been emailed to info@juvetechmedia.co.ke. You can also send the
+                prepared details on WhatsApp. Your selected time is a preference, not a confirmed
+                booking; we’ll confirm by replying.
               </p>
-              {newsletterMessage && (
-                <p className="mx-auto mt-3 max-w-md text-sm text-muted-foreground" role="status">
-                  {newsletterMessage}
-                </p>
-              )}
               <a href={requestUrl} target="_blank" rel="noreferrer" className="btn-primary mt-6">
                 Open WhatsApp <MessageCircle size={18} aria-hidden="true" />
               </a>
@@ -453,8 +370,8 @@ export function Booking({ primary = false }: { primary?: boolean }) {
                   <option value="" disabled>
                     Service needed
                   </option>
-                  {services.map((s) => (
-                    <option key={s.title}>{s.title}</option>
+                  {serviceDetails.map((service) => (
+                    <option key={service.id}>{service.title}</option>
                   ))}
                   <option>Full-Service Growth</option>
                 </select>
@@ -470,20 +387,13 @@ export function Booking({ primary = false }: { primary?: boolean }) {
                   required
                 />
               </label>
-              <label className="flex items-start gap-3 text-sm text-muted-foreground">
-                <input name="newsletterConsent" type="checkbox" className="mt-1 accent-primary" />
-                <span>
-                  Email me occasional JuveTech Media news and marketing tips. You can unsubscribe at
-                  any time.
-                </span>
-              </label>
               {error && (
                 <p className="text-sm text-destructive" role="alert">
                   {error}
                 </p>
               )}
               <button className="btn-primary w-full" disabled={isSubmitting}>
-                {isSubmitting ? "Saving your request…" : "Save request and continue to WhatsApp"}{" "}
+                {isSubmitting ? "Sending your request…" : "Email request and continue to WhatsApp"}{" "}
                 <MessageCircle size={18} aria-hidden="true" />
               </button>
             </>

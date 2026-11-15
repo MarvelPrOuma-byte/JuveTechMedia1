@@ -7,7 +7,7 @@ import { pageHead } from "@/lib/seo";
 
 export const Route = createFileRoute("/blog")({
   head: ({ matches }) => {
-    if (matches.some(({ routeId }) => routeId === "/blog/$slug")) return {};
+    if (matches.some(({ routeId }) => routeId.startsWith("/blog/"))) return {};
     return pageHead(
       "/blog",
       "Digital Marketing Insights | JuveTech Media",
@@ -34,7 +34,11 @@ function BlogIndexPage() {
               <p className="text-xs font-semibold uppercase tracking-[0.16em] text-primary">
                 {post.category}
               </p>
-              <h2 className="mt-4 text-xl font-bold leading-snug">{post.title}</h2>
+              <h2 className="mt-4 text-xl font-bold leading-snug">
+                <Link to="/blog/$slug" params={{ slug: post.slug }} className="hover:text-primary">
+                  {post.title}
+                </Link>
+              </h2>
               <p className="mt-3 flex-1 text-sm leading-6 text-muted-foreground">
                 {post.description}
               </p>
@@ -55,7 +59,7 @@ function BlogIndexPage() {
                 params={{ slug: post.slug }}
                 className="mt-5 inline-flex items-center gap-2 text-sm font-semibold text-primary hover:underline"
               >
-                Read article <ArrowUpRight size={16} aria-hidden="true" />
+                Read More <ArrowUpRight size={16} aria-hidden="true" />
               </Link>
             </article>
           ))}

@@ -15,22 +15,31 @@ describe("App routing", () => {
     expect(matches.at(-1)?.routeId).not.toBe(rootRouteId);
   });
 
-  it("does not expose the removed work page", () => {
+  it.each(["/work", "/case-studies", "/pricing"])("does not expose the removed %s page", (path) => {
     const router = createRouter({ routeTree, context: { queryClient: new QueryClient() } });
 
-    const matches = router.matchRoutes("/work");
+    const matches = router.matchRoutes(path);
 
     expect(matches.at(-1)?.routeId).toBe(rootRouteId);
   });
 
-  it.each(["/team", "/blog", "/blog/seo-paid-media-growth", "/case-studies", "/services/seo"])(
-    "matches the %s page",
-    (path) => {
-      const router = createRouter({ routeTree, context: { queryClient: new QueryClient() } });
+  it.each([
+    "/team",
+    "/blog",
+    "/blog/seo-paid-media-growth",
+    "/portfolio",
+    "/services/social-media",
+    "/services/video-production",
+    "/services/web-design",
+    "/services/app-development",
+    "/services/seo",
+    "/services/branding",
+    "/services/local-seo",
+  ])("matches the %s page", (path) => {
+    const router = createRouter({ routeTree, context: { queryClient: new QueryClient() } });
 
-      const matches = router.matchRoutes(path);
+    const matches = router.matchRoutes(path);
 
-      expect(matches.at(-1)?.routeId).not.toBe(rootRouteId);
-    },
-  );
+    expect(matches.at(-1)?.routeId).not.toBe(rootRouteId);
+  });
 });
